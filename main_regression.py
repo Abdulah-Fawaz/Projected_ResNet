@@ -170,7 +170,7 @@ for k in range(K):
     #model = Linear_simple(40962*4,1).to(device)
     #model = Convolutional_simple(4,1).to(device)
     model = ResNet(ResidualBlock,2,[2,2,2,2], [16,32,64,96], FC_channels=96*11*11, in_channels=4).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.00001, weight_decay = 0.01)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay = 0.01)
 
 
 
@@ -227,7 +227,7 @@ for k in range(K):
 
     test_outputs = []
     test_labels = []
-    
+    model.eval()
     for i, batch in enumerate(MyTestLoader):
         test_images = batch['image']
             
