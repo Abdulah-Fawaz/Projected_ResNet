@@ -581,7 +581,7 @@ class My_Projected_dHCP_Data(torch.utils.data.Dataset):
                 
         if self.projected == True:
             image = griddata(xy_points, image.T, grid, 'nearest')
-            image = image.reshape(170,170,4)
+            image = image.reshape(170,170,4).permute(2,0,1)
             
         if self.metadata != None:
             sample = {'image': image, 'metadata' : self.metadata, 'label': label}
