@@ -67,7 +67,7 @@ learning_rate = 1e-3
 def weighted_mse_loss(input, target, k=1 ):
     return torch.mean((1+(target<37)* k )* (input - target) ** 2)
 
-criterion = nn.L1Loss()
+criterion = weighted_mse_loss
 
 numberOfEpochs = 150
 
@@ -153,9 +153,11 @@ for k in range(K):
     
     
     
-    train_ds = My_Projected_dHCP_Data(train_set, number_of_warps = 0, rotations=False, smoothing = False, normalisation='std', parity_choice='both', projected=True)
+    train_ds = My_Projected_dHCP_Data(train_set, number_of_warps = 0, rotations=False, smoothing = False, 
+                                      normalisation='std', parity_choice='both', projected = True)
     
-    test_ds = My_Projected_dHCP_Data(test_set, number_of_warps = 0, rotations=False, smoothing = False, normalisation='std', parity_choice='left', projected = True)
+    test_ds = My_Projected_dHCP_Data(test_set, number_of_warps = 0, rotations=False, smoothing = False, 
+                                     normalisation='std', parity_choice='left', projected = True)
     
     
     MyTrainLoader  = torch.utils.data.DataLoader(train_ds,batch_size,   shuffle=True, num_workers=2)
@@ -169,7 +171,7 @@ for k in range(K):
 
     #model = Linear_simple(40962*4,1).to(device)
     #model = Convolutional_simple(4,1).to(device)
-    model = ResNet(ResidualBlock,2,[2,2,2,2], [16,32,64,96], FC_channels=96*11*11, in_channels=4).to(device)
+    model = ResNet(ResidualBlock,2,[2,2,2,2], [16,32,64,96], FC_channels=96*11*11,  in_channels=4).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay = 0.01)
 
 
