@@ -20,7 +20,7 @@ sys.path.append('/home/fa19/Documents/dHCP_Data') # i append this path because d
 
 
 from MyDataLoader import My_Projected_dHCP_Data
-from model import ResNet
+from model import ResNet, ResNet_2
 
 
 """
@@ -169,10 +169,12 @@ for k in range(K):
 
     MyTrainLoader2 =  torch.utils.data.DataLoader(train_ds,1,   shuffle=True, num_workers=1)
 
-    #model = Linear_simple(40962*4,1).to(device)
-    #model = Convolutional_simple(4,1).to(device)
-    model = ResNet(ResidualBlock,2,[2,2,2,2], [16,32,64,96], FC_channels=96*11*11,  in_channels=4).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay = 0.01)
+#    model = ResNet(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=256*11*11,  in_channels=4).to(device)
+
+    model = ResNet_2(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=64*43*43,  in_channels=4).to(device)
+
+    
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay = 0.01)
 
 
 
