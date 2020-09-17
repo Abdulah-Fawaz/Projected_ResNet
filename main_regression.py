@@ -31,7 +31,7 @@ GET DEVICE & MODEL
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print('device is ', device)
-
+experiment = 1
 
 
 
@@ -167,8 +167,11 @@ for k in range(K):
     print("Data Sucessfully Loaded")  
         
 
-    MyTrainLoader2 =  torch.utils.data.DataLoader(train_ds,1,   shuffle=True, num_workers=1)
-
+    rot_test_ds = My_Projected_dHCP_Data(test_set, number_of_warps = 0, rotations=True, smoothing = False, 
+                               normalisation='std', parity_choice='left', projected = True)
+    
+    MyRotTestLoader =  torch.utils.data.DataLoader(rot_test_ds,1,   shuffle=False, num_workers=1)
+    
 #    model = ResNet(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=256*11*11,  in_channels=4).to(device)
 
     model = ResNet_2(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=64*43*43,  in_channels=4).to(device)
@@ -225,8 +228,22 @@ for k in range(K):
                 print('validation ', np.mean(running_losses))
                 
 
+        if epoch%25 ==0:
+            with torch.no_grad():
+                running_losses  = []
+                for i, batch in enumerate(MyRotTestLoader):    
+                    images = batch['image']
 
-
+                    
+                    images = images.to(device)
+                    labels = batch['label'].cuda()
+        
+                    estimates = model(images)
+                    
+                    loss = criterion(estimates, labels)
+        
+                    running_losses.append(loss.item())
+                print('Rotated validation ', np.mean(running_losses))
 
 
     test_outputs = []
@@ -235,7 +252,6 @@ for k in range(K):
     for i, batch in enumerate(MyTestLoader):
         test_images = batch['image']
             
-        
         test_images = test_images.to(device)
         test_label = batch['label'].to(device)
     
@@ -261,9 +277,8 @@ for k in range(K):
     test_outputs = []
     test_labels = []
 
-    for i, batch in enumerate(MyTrainLoader2):
+    for i, batch in enumerate(MyRotTestLoader):
         test_images = batch['image']
-
 
         test_images = test_images.to(device)
         test_label = batch['label'].to(device)
@@ -277,17 +292,37 @@ for k in range(K):
 
 
     print('average absolute error ', np.mean(np.abs(np.array(test_outputs)-np.array(test_labels)))) 
-
-
-
+    overall_rot_results.append(np.mean(np.abs(np.array(test_outputs)-np.array(test_labels))))
+    list_of_all_rot_predictions.extend(test_outputs)
+    list_of_all_rot_labels.extend(test_labels)
+    
     plt.scatter(x = test_labels, y = test_outputs)
     plt.plot(np.arange(30,45), np.arange(30,45))
     plt.show()
-    
+
+
     
     
 plt.scatter(x = list_of_all_labels, y = list_of_all_predictions)
 plt.plot(np.arange(25,45), np.arange(25,45))
-#plt.savefig('exp_3_fig_all')
-#
+plt.savefig('exp_' + str(experiment) + '_fig_all')
+
 plt.show()
+
+np.save('experiment_' + str(experiment) + '_predictions_norot.npy', [list_of_all_labels, list_of_all_predictions])
+torch.save(model, 'model_exp_' + str(experiment))
+
+
+np.save('exp' + str(experiment) + '_results_norot',overall_results)
+
+
+plt.scatter(x = list_of_all_rot_labels, y = list_of_all_rot_predictions)
+plt.plot(np.arange(25,45), np.arange(25,45))
+plt.savefig('exp_' + str(experiment) + '_fig_all_rot')
+
+plt.show()
+
+np.save('experiment_' + str(experiment) + '_predictions_rot.npy', [list_of_all_rot_labels, list_of_all_rot_predictions])
+
+
+np.save('exp' + str(experiment) + '_results_rot',overall_rot_results)
