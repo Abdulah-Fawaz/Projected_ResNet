@@ -145,6 +145,11 @@ list_of_all_predictions = []
 
 overall_results = []
 
+overall_rot_results = []
+
+list_of_all_rot_labels = []
+list_of_all_rot_predictions = []
+
 for k in range(K):
     test_set = full_file_arr[ splits[k]:splits[k+1] ]
     
