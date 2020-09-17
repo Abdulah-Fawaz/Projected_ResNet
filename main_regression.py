@@ -18,7 +18,7 @@ import os
 import sys
 sys.path.append('/home/fa19/Documents/dHCP_Data') # i append this path because dta loaders and make datautils are located there. 
 
-
+from ResidualBlock import ResidualBlock
 from MyDataLoader import My_Projected_dHCP_Data
 from model import ResNet, ResNet_2
 
