@@ -179,7 +179,7 @@ for k in range(K):
     
 #    model = ResNet(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=256*11*11,  in_channels=4).to(device)
 
-    model = ResNet_2(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=64*43*43,  in_channels=4).to(device)
+    model = ResNet_2(ResidualBlock,1,[2,2,2,2], [32,64,128,256], FC_channels=64*43*43,  in_channels=4).to(device)
 
     
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay = 0.01)

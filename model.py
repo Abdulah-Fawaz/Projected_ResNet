@@ -92,8 +92,8 @@ class ResNet_2(nn.Module):
         self.bn1 = nn.BatchNorm2d(num_features[0])
         # num_blocks per layer is given by input argument num_blocks (which is an array)
         self.layer1 = self._make_layer(block, num_features[1], num_blocks, stride=num_strides[1])
-#        self.layer2 = self._make_layer(block, num_features[2], num_blocks, stride=num_strides[2])
-#        self.layer3 = self._make_layer(block, num_features[3], num_blocks, stride=num_strides[3])
+        self.layer2 = self._make_layer(block, num_features[2], num_blocks, stride=num_strides[2])
+        self.layer3 = self._make_layer(block, num_features[3], num_blocks, stride=num_strides[3])
         self.linear = nn.Linear(FC_channels, num_classes)
         self.dropout = nn.Dropout(0.7)
         # ----------------------------------------------------------------------
@@ -105,9 +105,10 @@ class ResNet_2(nn.Module):
         for i in np.arange(num_blocks -1):
             layers.append(block(self.in_planes, planes))
             self.in_planes = planes 
-        
-        layers.append(block(planes, planes, stride))
-        
+
+        layers.append(block(self.in_planes, planes, stride))
+        self.in_planes = planes 
+
         return nn.Sequential(*layers)
 
     def forward(self, x):
