@@ -20,7 +20,7 @@ sys.path.append('/home/fa19/Documents/dHCP_Data') # i append this path because d
 
 from ResidualBlock import ResidualBlock
 from MyDataLoader import My_Projected_dHCP_Data
-from model import ResNet, ResNet_2
+from model import ResNet, ResNet_2, ResNet_3
 
 
 """
@@ -31,7 +31,7 @@ GET DEVICE & MODEL
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print('device is ', device)
-experiment = 1
+experiment = 3
 
 
 
@@ -158,7 +158,7 @@ for k in range(K):
     
     
     
-    train_ds = My_Projected_dHCP_Data(train_set, number_of_warps = 0, rotations=False, smoothing = False, 
+    train_ds = My_Projected_dHCP_Data(train_set, number_of_warps = 20, rotations=True, smoothing = False, 
                                       normalisation='std', parity_choice='both', projected = True)
     
     test_ds = My_Projected_dHCP_Data(test_set, number_of_warps = 0, rotations=False, smoothing = False, 
@@ -179,11 +179,10 @@ for k in range(K):
     
 #    model = ResNet(ResidualBlock,2,[2,2,2,2], [32,64,128,256], FC_channels=256*11*11,  in_channels=4).to(device)
 
-    model = ResNet_2(ResidualBlock,1,[2,2,2,2], [32,64,128,256], FC_channels=64*43*43,  in_channels=4).to(device)
+    model = ResNet_3(ResidualBlock,1,[2,2,2,2,2], [32,64,128,256, 512], FC_channels=512*6*6,  in_channels=4).to(device)
 
     
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001, weight_decay = 0.01)
-
 
 
 
@@ -198,6 +197,7 @@ for k in range(K):
         for i, batch in enumerate(MyTrainLoader):    
             model.train()
             images = batch['image']
+
             #images = images.reshape(images.size(0), -1)
             
             images = images.to(device)
