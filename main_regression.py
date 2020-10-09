@@ -31,7 +31,7 @@ GET DEVICE & MODEL
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print('device is ', device)
-experiment = 3
+experiment = 4
 
 
 
