@@ -9,7 +9,7 @@ Created on Fri Oct  9 12:07:40 2020
 
 import torch
 import torch.nn as nn
-
+import numpy as np
 
 import matplotlib.pyplot as plt
 
