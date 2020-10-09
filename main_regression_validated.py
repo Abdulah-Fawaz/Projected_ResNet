@@ -277,6 +277,7 @@ for epoch in range(numberOfEpochs):
                 best = np.mean(running_losses)
                 torch.save(model, 'best_model')
                 patience = 0
+                print('saved_new_best')
             else:
                 patience+=1
             if patience == patience_limit:
